@@ -1,0 +1,48 @@
+(deftemplate enfermedad
+    (slot id (type INTEGER))
+    (slot nombre (type SYMBOL))
+    (multislot signos (type SYMBOL) (allowed-symbols dolor fiebre tos cansancio))
+    (multislot sintomas (type SYMBOL) (allowed-symbols dolor_de_cabeza nauseas escalofrios))
+)
+
+(deffacts BaseDeConocimiento
+    (enfermedad (id 1) (nombre hipertension) (signos dolor_de_cabeza zumbido) (sintomas fiebre fatiga))
+    (enfermedad (id 2) (nombre lupus) (signos erupcion fatiga) (sintomas fiebre dolores))
+    (enfermedad (id 3) (nombre leucemia) (signos debilidad moretones) (sintomas fiebre nauseas))
+    (enfermedad (id 4) (nombre pancreatitis) (signos diarrea mareos) (sintomas dolores fatiga))
+    (enfermedad (id 5) (nombre cancer) (signos dolor_de_pecho tos) (sintomas nauseas perdida_de_peso_excesiva))
+    (enfermedad (id 6) (nombre artritis) (signos dolor_muscular deformidad) (sintomas dolores descordinacion))
+)
+
+(defrule Consultarenfermedad
+    =>
+    (printout t "Ingresa el ID de la enfermedad que desea consultar: ")
+    (bind ?id (read))
+    (enfermedad (id ?id) (nombre ?nombre) (signos $?signos) (sintomas $?sintomas))
+    =>
+    (printout t "------------------------------------" crlf)
+    (printout t "Enfermedad encontrada: " ?nombre " (ID: " ?id ")" crlf)
+    (printout t "------------------------------------" crlf)
+    (printout t "Signos: " ?signos crlf)
+    (printout t "Síntomas: " ?sintomas crlf)
+    (printout t "------------------------------------" crlf)
+)
+
+(defrule Eliminarenfermedad
+    =>
+    (printout t "Ingresa el ID de la enfermedad que desea eliminar: ")
+    (bind ?id (read))
+    (enfermedad (id ?id))
+    =>
+    (printout t "Eliminando enfermedad con ID: " ?id crlf)
+    (retract (Enfermedad (id ?id)))
+)
+
+(defrule ConsultarenfermedadPorNombre
+    =>
+    (printout t "Ingresa el nombre de la enfermedad que desea consultar: ")
+    (bind ?nombre (read))
+    (Enfermedad (nombre ?nombre))
+    =>
+    (printout t "Enfermedad encontrada por nombre: " ?nombre crlf)
+)
