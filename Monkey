@@ -1,0 +1,64 @@
+(assert (location monkey floor))
+(assert (location chair floor))
+(assert (location desk floor))
+(assert (status hungry monkey))
+(assert (adjacent chair desk))
+(assert (adjacent monkey chair))
+(assert (attached banana ceiling))
+(assert (inRoom monkey room))
+(assert (inRoom banana room))
+(assert (emotion angry monkey))
+
+;; Reglas de producción (cuatro en total)
+
+(defrule grab-chair
+(status hungry monkey)
+(attached banana ceiling)
+(location chair floor)
+(adjacent monkey chair)
+=>
+(assert (holding monkey chair))
+(assert (adjacent monkey desk))
+(retract 2)
+(retract 5)
+(retract 6)
+)
+
+(defrule place-chair-on-desk
+(status hungry monkey)
+(attached banana ceiling)
+(holding monkey chair)
+(adjacent monkey desk)
+=>
+(assert (placedOn chair desk))
+(assert (location chair desk))
+(retract 11)
+)
+
+(defrule climb-on-chair
+(adjacent monkey desk)
+(location chair desk)
+(attached banana ceiling)
+(status hungry monkey)
+=>
+(assert (location monkey chair))
+(retract 1)
+(retract 12)
+(retract 13)
+)
+
+(defrule consume-banana
+(attached banana ceiling)
+(location monkey chair)
+(location chair desk)
+(status hungry monkey)
+=>
+(assert (consumed monkey banana))
+(assert (emotion happy monkey))
+(assert (status notHungry monkey))
+(assert (not (attached banana ceiling)))
+(retract 4)
+(retract 7)
+(retract 9)
+(retract 10)
+)
